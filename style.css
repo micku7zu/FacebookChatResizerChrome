@@ -1,0 +1,12 @@
+._5wdf._5w1r._5wdf._5w1r._5wdf._5w1r._5wdf._5w1r._5wdf._5w1r._5wdf._5w1r {
+	width: auto !important;
+	max-width: none !important;
+}
+
+.extresize.extresize.extresize.extresize.extresize.extresize.extresize{
+	position: absolute;
+	left: -10px;
+	top: -10px;
+	background-size:contain;
+	background-position: 0px;
+}
