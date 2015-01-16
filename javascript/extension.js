@@ -18,7 +18,7 @@ function insertResizeButton() {
 	var elems = $(".mls.titlebarButtonWrapper");
 	elems.each(function(el) {
 		if($(this).children(".extresize").length == 0) {
-			$(this).prepend('<a style="background-image:url( ' + chrome.extension.getURL('resize.png') + ');" class="extresize close button" data-ft="{&quot;tn&quot;:&quot;+\u003C&quot;}" role="button" tabindex="0" data-hover="tooltip" aria-label="Resize"></a>');
+			$(this).prepend('<a style="background-image:url( ' + chrome.extension.getURL('images/resize.png') + ');" class="extresize close button" data-ft="{&quot;tn&quot;:&quot;+\u003C&quot;}" role="button" tabindex="0" data-hover="tooltip" aria-label="Resize"></a>');
 		}
 	});
 }
