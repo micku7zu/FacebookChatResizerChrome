@@ -1,6 +1,10 @@
-._5wdf._5w1r._5wdf._5w1r._5wdf._5w1r._5wdf._5w1r._5wdf._5w1r._5wdf._5w1r {
+._5wd9._5wd9._5wd9._5wd9._5wd9 {
+	max-width: 95%;
+}
+
+._5wdf._5w1r._5wdf._5w1r._5wdf._5w1r {
 	width: auto !important;
-	max-width: none !important;
+	max-width: 90% !important;
 }
 
 .extresize.extresize.extresize.extresize.extresize.extresize.extresize{
@@ -9,4 +13,9 @@
 	top: -10px;
 	background-size: contain;
 	background-position: 0px;
+}
+
+
+.conversation.conversation.conversation.conversation.conversation.conversation {
+	padding-top: 40%;
 }
