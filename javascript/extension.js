@@ -1,7 +1,7 @@
 var bodyHeightDif = 55; //the difference between the window and the body with the text
 var bodyMinWidth = 200;
 var bodyMinHeight = 200;
-var bodyMaxWidthDif = 500; //window width - this
+var bodyMaxWidthDif = 225; //window width - this
 var bodyMaxHeightDif = 100; //window height - this
 var defaultWidth = 0,
 	defaultHeight = 0; //default width and height of a window, we will get it
