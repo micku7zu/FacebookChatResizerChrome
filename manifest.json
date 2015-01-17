@@ -1,7 +1,14 @@
 {
 	"name": "Facebook Chat Resizer",
 	"description": "Resize the Facebook chat window",
-	"version": "1.0.1",
+	"version": "1.1",
+	"background": {
+		"scripts": ["javascript/declarative.js"],
+		"persistent": false
+	},
+	"permissions" : [
+		"declarativeContent"
+	],
 	"content_scripts": [
 		{
 			"matches": ["*://*.facebook.com/*", "*://facebook.com/*"],
@@ -18,5 +25,10 @@
 		"16": "images/icon16.png",
 		"48": "images/icon48.png",
 		"128": "images/icon128.png"
+	},
+	"page_action": {
+		"default_icon": "images/icon48.png",
+		"default_title": "Facebook Chat Resizer Options",
+		"default_popup": "html/page_action.html"
 	}
 }

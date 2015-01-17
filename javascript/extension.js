@@ -3,11 +3,46 @@ var bodyMinWidth = 200;
 var bodyMinHeight = 200;
 var bodyMaxWidthDif = 225; //window width - this
 var bodyMaxHeightDif = 100; //window height - this
-var defaultWidth = 0,
-	defaultHeight = 0; //default width and height of a window, we will get it
+var defaultWidth = 260,
+	defaultHeight = 285; //default width and height of a window, we will get it
+var defaultMinHeight = 200,
+	defaultMinWidth = 200;
+
+function get(key) {
+	try{
+		return JSON.parse(localStorage[key]);
+	}catch(err) {
+		return localStorage[key];
+	}
+}
+
+function updateLocalStorage(callback) {
+	chrome.runtime.sendMessage({method: "getLocalStorage"}, function(response) {
+		for(var key in response.data) {
+			localStorage[key] = response.data[key];
+		}
+
+		if(callback != undefined)
+			callback();
+	});
+}
+
+function updateMinimumSize() {
+	updateLocalStorage(function(){
+		if(get("min")) {
+			bodyMinWidth = defaultWidth;
+			bodyMinHeight = defaultHeight;
+		}else{
+			bodyMinHeight = defaultMinHeight;
+			bodyMinWidth = defaultMinWidth;
+		}
+	});
+}
 
 //on windows load
 window.addEventListener("load", function() {
+
+	updateMinimumSize();
 
 	//try to insert the resize button
 	setInterval(function() { insertResizeButton(); }, 1000);
@@ -15,6 +50,7 @@ window.addEventListener("load", function() {
 }, false);
 
 function insertResizeButton() {
+	updateLocalStorage();
 	var elems = $(".mls.titlebarButtonWrapper");
 	elems.each(function(el) {
 		if($(this).children(".extresize").length == 0) {
@@ -26,19 +62,23 @@ function insertResizeButton() {
 			var chatBox = $(this).parents(".fbDockChatTabFlyout").eq(0);
 			chatBox.find('.fbNubFlyoutHeader').eq(0).hide();
 
-			//get a default width if not set
-			if(defaultWidth == 0) {
-				defaultWidth = chatBox.width();
-				defaultHeight = chatBox.height();
+			//resize the window after we removed the info box
+			var w = defaultWidth,
+				h = defaultHeight;
 
-				console.log("Default width and height: " + defaultWidth + " - " + defaultHeight);
+			if(get("save")) {
+				arr = getSaved($(this));
+				console.log(arr);
+
+				w = arr.w;
+				h = arr.h;
 			}
 
-			//resize the window after we removed the info box
-			resize(defaultWidth, defaultHeight, $(this));
+			resize(w, h, $(this));
 
 			//drag events
 			$(this).drag('start', function(ev, dd) {
+				updateMinimumSize();
 				var chatBox = $(this).parents(".fbDockChatTabFlyout").eq(0);
 				dd.width = chatBox.width();
 				dd.height = chatBox.height();
@@ -48,6 +88,10 @@ function insertResizeButton() {
 
 			$(this).drag(function(ev, dd) {
 				resize(dd.width - dd.deltaX, dd.height - dd.deltaY, elem);
+			});
+
+			$(this).drag('end', function() {
+				save(elem);
 			});
 		}
 	});
@@ -64,8 +108,6 @@ function resize(w, h, elem) {
 	if(h < bodyMinHeight) h = bodyMinHeight;
 	if(h > $(window).height() - bodyMaxHeightDif) h =  $(window).height() - bodyMaxHeightDif;
 
-	console.log($( window ).height());
-
 	var parent = elem.parents(".fbNub").eq(0);
 	var chatBox = elem.parents(".fbDockChatTabFlyout").eq(0);
 	var chatBody = $(chatBox).find(".fbNubFlyoutBody").eq(0);
@@ -78,23 +120,33 @@ function resize(w, h, elem) {
 	chatBody.css("height", bodyHeight + "px");
 }
 
-function onClickPressed(elem) {
-	var parent = elem.parents(".fbNub").eq(0);
+function getSaved(elem) {
 	var chatBox = elem.parents(".fbDockChatTabFlyout").eq(0);
-	var chatBody = $(chatBox).find(".fbNubFlyoutBody").eq(0);
+	var name = chatBox.find(".titlebarText").eq(0).html();
+	name = name.replace(/\W/g, '')
 
-	tX = chatBox.offset().left + chatBox.width();
-	tY = chatBox.offset().top - $(window).scrollTop() + chatBox.height();
+	var arr = get("saved");
 
-	//chatBody.find(".conversation").eq(0).css("paddingTop", "500px");
-	//chatBody.animate({"scrollTop": 99999}, 0);
-	//chatBody.css("overflow-y", "scroll");
+	if(arr != undefined && name in arr) {
+		return arr[name];
+	}else{
+		return {w: defaultWidth, h: defaultHeight}
+	}
+}
 
-	//set width auto
-	chatBody.find("div").css("width", "auto");
+function save(elem) {
+	var chatBox = elem.parents(".fbDockChatTabFlyout").eq(0);
+	var name = chatBox.find(".titlebarText").eq(0).html();
+	name = name.replace(/\W/g, '')
+	
+	var arr = get("saved");
 
-	//set current chat window
-	current = elem;
+	if(arr == undefined) {
+		arr = {};
+	}
 
-	toggleOnMoveEvent(true); //set move mouse listener
+	arr[name] = {w: chatBox.width(), h: chatBox.height()};
+
+	localStorage["saved"] = JSON.stringify(arr);
+
 }
