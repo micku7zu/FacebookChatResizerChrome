@@ -1,7 +1,7 @@
 {
 	"name": "Facebook Chat Resizer",
 	"description": "Resize the Facebook chat window",
-	"version": "1.0",
+	"version": "1.0.1",
 	"content_scripts": [
 		{
 			"matches": ["*://*.facebook.com/*", "*://facebook.com/*"],
